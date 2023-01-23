@@ -14,11 +14,11 @@ public class ChineseNumberStringifierImpl implements ChineseNumberStringifier {
 
         final HashMap<Integer, Integer> hashMap = new HashMap<>();
 
-        for (int j = 1; j <= lengthLimit; j++) {
+        for (int i = 1; i <= lengthLimit; i++) {
             int d = n / 10;
-            int k = n - d * 10;
+            int j = n - d * 10;
             n = d;
-            hashMap.put(j, k);
+            hashMap.put(i, j);
         }
 
         var firstDigit = getTheFifthDigit(hashMap.get(5));
