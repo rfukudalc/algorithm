@@ -4,7 +4,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-public class MyMapImpl<K, V> implements MyMap {
+public class MyMapImpl<K, V> implements MyMap<K, V> {
 
     private int size;
     private LinkedList<Node>[] buckets;
@@ -15,21 +15,19 @@ public class MyMapImpl<K, V> implements MyMap {
         size = 0;
     }
 
-    @SuppressWarnings("unchecked")
-    public V get(@NotNull Object key) {
-        int bucketIndex = generateHash((K) key);
+    public V get(@NotNull K key) {
+        int bucketIndex = generateHash(key);
         int indexWithinBucket = getIndexWithinBucket(key, bucketIndex);
         // 引数のキーと一致するノードを返却する
         if (indexWithinBucket != -1) {
             Node node = buckets[bucketIndex].get(indexWithinBucket);
-            return (V) node.value;
+            return node.value;
         }
         return null;
     }
 
-    @SuppressWarnings("unchecked")
-    public V put(@NotNull Object key, @NotNull Object value) {
-        int bucketIndex = generateHash((K) key);
+    public V put(@NotNull K key, @NotNull V value) {
+        int bucketIndex = generateHash(key);
         int indexWithinBucket = getIndexWithinBucket(key, bucketIndex);
         // 引数「key」と一致するノードがバケットにある場合は、引数「value」でノードの値を更新する
         Node node;
@@ -41,12 +39,11 @@ public class MyMapImpl<K, V> implements MyMap {
             buckets[bucketIndex].add(node);
             size++;
         }
-        return (V) node.value;
+        return node.value;
     }
 
-    @SuppressWarnings("unchecked")
-    public void remove(@NotNull Object key) {
-        int bucketIndex = generateHash((K) key);
+    public void remove(@NotNull K key) {
+        int bucketIndex = generateHash(key);
         int indexWithinBucket = getIndexWithinBucket(key, bucketIndex);
         // 引数「key」と一致するノードがバケットにある場合は削除する
         if (indexWithinBucket != -1) {
@@ -59,12 +56,12 @@ public class MyMapImpl<K, V> implements MyMap {
         return size;
     }
 
-    private static class Node {
+    private class Node {
 
-        @NotNull Object key;
-        Object value;
+        @NotNull K key;
+        V value;
 
-        public Node(@NotNull Object key, Object value) {
+        public Node(@NotNull K key, V value) {
             this.key = key;
             this.value = value;
         }
@@ -86,7 +83,7 @@ public class MyMapImpl<K, V> implements MyMap {
     }
 
     // バケット内のインデックスを取得する処理
-    private int getIndexWithinBucket(Object key, int bucketIndex) {
+    private int getIndexWithinBucket(K key, int bucketIndex) {
         int indexWithinBucket = 0;
         for (Node node : buckets[bucketIndex]) {
             // 引数のキーと一致するノードがある場合はそのインデックスを返却する
