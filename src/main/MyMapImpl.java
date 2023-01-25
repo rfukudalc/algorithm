@@ -4,44 +4,48 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-@SuppressWarnings({"unused", "unchecked"})
-public class MyHashMapImpl<V, K> implements MyHashMap {
+public class MyMapImpl<K, V> implements MyMap {
 
     private int size;
     private LinkedList<Node>[] buckets;
 
-    // コンストラクターは引数で渡された数字をサイズとして固定長のハッシュマップを生成する
-    public MyHashMapImpl(int initialCapacity) {
+    // コンストラクターは引数で渡された数字をサイズとして固定長のマップを生成する
+    public MyMapImpl(int initialCapacity) {
         initBuckets(initialCapacity);
         size = 0;
     }
 
-    public Object get(@NotNull Object key) {
+    @SuppressWarnings("unchecked")
+    public V get(@NotNull Object key) {
         int bucketIndex = generateHash((K) key);
         int indexWithinBucket = getIndexWithinBucket(key, bucketIndex);
         // 引数のキーと一致するノードを返却する
         if (indexWithinBucket != -1) {
             Node node = buckets[bucketIndex].get(indexWithinBucket);
-            return node.value;
+            return (V) node.value;
         }
         return null;
     }
 
-    public void put(@NotNull Object key, Object value) {
+    @SuppressWarnings("unchecked")
+    public V put(Object key, Object value) {
         int bucketIndex = generateHash((K) key);
         int indexWithinBucket = getIndexWithinBucket(key, bucketIndex);
         // 引数「key」と一致するノードがバケットにある場合は、引数「value」でノードの値を更新する
+        Node node;
         if (indexWithinBucket != -1) {
-            Node node = buckets[bucketIndex].get(indexWithinBucket);
+            node = buckets[bucketIndex].get(indexWithinBucket);
             node.value = value;
         } else { // 上記以外ではバケットにノードを追加する
-            Node node = new Node(key, value);
+            node = new Node(key, value);
             buckets[bucketIndex].add(node);
             size++;
         }
+        return (V) node.value;
     }
 
-    public void remove(@NotNull Object key) {
+    @SuppressWarnings("unchecked")
+    public void remove(Object key) {
         int bucketIndex = generateHash((K) key);
         int indexWithinBucket = getIndexWithinBucket(key, bucketIndex);
         // 引数「key」と一致するノードがバケットにある場合は削除する
@@ -66,11 +70,12 @@ public class MyHashMapImpl<V, K> implements MyHashMap {
         }
     }
 
+    @SuppressWarnings("unchecked")
     // バケットの初期化処理（引数を固定サイズとする）
     private void initBuckets(int n) {
         buckets = new LinkedList[n];
         for (int bucketIndex = 0; bucketIndex < buckets.length; bucketIndex++) {
-            buckets[bucketIndex] = new LinkedList<>(); // ハッシュマップのサイズだけバケットにリストデータ領域を確保
+            buckets[bucketIndex] = new LinkedList<>(); // マップのサイズだけバケットにリストデータ領域を確保
         }
     }
 
