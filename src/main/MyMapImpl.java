@@ -28,7 +28,7 @@ public class MyMapImpl<K, V> implements MyMap {
     }
 
     @SuppressWarnings("unchecked")
-    public V put(Object key, Object value) {
+    public V put(@NotNull Object key, @NotNull Object value) {
         int bucketIndex = generateHash((K) key);
         int indexWithinBucket = getIndexWithinBucket(key, bucketIndex);
         // 引数「key」と一致するノードがバケットにある場合は、引数「value」でノードの値を更新する
@@ -45,7 +45,7 @@ public class MyMapImpl<K, V> implements MyMap {
     }
 
     @SuppressWarnings("unchecked")
-    public void remove(Object key) {
+    public void remove(@NotNull Object key) {
         int bucketIndex = generateHash((K) key);
         int indexWithinBucket = getIndexWithinBucket(key, bucketIndex);
         // 引数「key」と一致するノードがバケットにある場合は削除する
