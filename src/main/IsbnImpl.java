@@ -2,6 +2,8 @@ package main;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Objects;
+
 public class IsbnImpl implements Isbn {
 
     private final String prefix;
@@ -50,5 +52,23 @@ public class IsbnImpl implements Isbn {
 
     private @NotNull String combineFiveElements(String prefix, String group, String registrant, String publication, String checkDigit) {
         return String.join("-", prefix, group, registrant, publication, checkDigit);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true; // 同一オブジェクトであれば即座に true を返す
+        if (o == null || getClass() != o.getClass()) return false; // オブジェクトが null か異なるクラスオブジェクトなら false を返す
+        IsbnImpl isbn = (IsbnImpl) o;
+        // Isbn にキャストしたオブジェクトの各パラメータと比較対象のパラメータが全て一致すれば同一オブジェクトと判断し、true を返す
+        return Objects.equals(prefix, isbn.prefix)
+                && Objects.equals(group, isbn.group)
+                && Objects.equals(registrant, isbn.registrant)
+                && Objects.equals(publication, isbn.publication)
+                && Objects.equals(checkDigit, isbn.checkDigit);
+    }
+
+    @Override
+    public int hashCode() { // パラメータの複合でハッシュ値を生成する
+        return Objects.hash(prefix, group, registrant, publication, checkDigit);
     }
 }
