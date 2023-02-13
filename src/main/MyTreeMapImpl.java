@@ -3,6 +3,8 @@ package main;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Comparator;
+import java.util.LinkedList;
+import java.util.Objects;
 import java.util.function.BiConsumer;
 
 public class MyTreeMapImpl<K, V> implements MyTreeMap<K, V> {
@@ -132,25 +134,25 @@ public class MyTreeMapImpl<K, V> implements MyTreeMap<K, V> {
         }
     }
 
-    private void inOrder() {
-        inOrderRecursive(root);
-    }
-
-    private Node inOrderRecursive(Node root) {
-
-        if (root != null) {
-            inOrderRecursive(root.left);
-
-            inOrderRecursive(root.right);
-        }
-        return null;
-    }
-
     @Override
     public void forEach(BiConsumer<? super K,? super V> action) {
-//        Objects.requireNonNull(action);
-//        for (V v : ) {
-//            action.accept(v);
-//        }
+        Objects.requireNonNull(action);
+        for (Node node : inOrder()) {
+            action.accept(node.key, node.value);
+        }
+    }
+
+    private LinkedList<Node> inOrder() {
+        return inOrderRecursive(root, new LinkedList<>());
+    }
+
+    private LinkedList<Node> inOrderRecursive(Node root, LinkedList<Node> list) {
+
+        if (root != null) {
+            inOrderRecursive(root.left, list);
+            list.add(root);
+            inOrderRecursive(root.right, list);
+        }
+        return list;
     }
 }
