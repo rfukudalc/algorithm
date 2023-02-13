@@ -1,12 +1,16 @@
 package main;
 
+import java.util.function.BiConsumer;
+
 public interface MyTreeMap<K, V> {
 
     V get(K key);
 
-    void put(K key, V value);
+    V put(K key, V value);
 
-    void remove(K key);
+    V remove(K key);
 
     int size();
+
+    void forEach(BiConsumer<? super K,? super V> action);
 }
