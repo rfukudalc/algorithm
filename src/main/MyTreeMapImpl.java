@@ -18,6 +18,21 @@ public class MyTreeMapImpl<K, V> implements MyTreeMap<K, V> {
         root = null;
     }
 
+    private class Node {
+
+        @NotNull K key;
+        V value;
+
+        Node left, right;
+
+        public Node(@NotNull K key, V value) {
+            this.key = key;
+            this.value = value;
+
+            left = right = null;
+        }
+    }
+
     @Override
     public V get(K key) {
         var matchedNode = getRecursive(root, key);
@@ -119,21 +134,6 @@ public class MyTreeMapImpl<K, V> implements MyTreeMap<K, V> {
         return size;
     }
 
-    private class Node {
-
-        @NotNull K key;
-        V value;
-
-        Node left, right;
-
-        public Node(@NotNull K key, V value) {
-            this.key = key;
-            this.value = value;
-
-            left = right = null;
-        }
-    }
-
     @Override
     public void forEach(BiConsumer<? super K,? super V> action) {
         Objects.requireNonNull(action);
@@ -149,6 +149,7 @@ public class MyTreeMapImpl<K, V> implements MyTreeMap<K, V> {
     private LinkedList<Node> inOrderRecursive(Node root, LinkedList<Node> list) {
 
         if (root != null) {
+            // ノードを昇順に並び替えるため、ツリーの左下から順にリストへの追加を行う
             inOrderRecursive(root.left, list);
             list.add(root);
             inOrderRecursive(root.right, list);
