@@ -11,7 +11,7 @@ public class MyTreeMapImpl<K, V> implements MyTreeMap<K, V> {
 
     private int size;
     private Node root;
-    private final Comparator comparator;
+    private final Comparator<? super K> comparator;
 
     public MyTreeMapImpl(Comparator<? super K> comparator) {
         this.comparator = comparator;
@@ -41,7 +41,6 @@ public class MyTreeMapImpl<K, V> implements MyTreeMap<K, V> {
         return null;
     }
 
-    @SuppressWarnings("unchecked")
     private Node getRecursive(Node root, K key) {
         if (root == null || root.key.equals(key)) return root;
         if (comparator.compare(root.key, key) < 0) return getRecursive(root.right, key);
@@ -57,7 +56,6 @@ public class MyTreeMapImpl<K, V> implements MyTreeMap<K, V> {
         return updatedVal;
     }
 
-    @SuppressWarnings("unchecked")
     Node putRecursive(Node root, K key, V value) {
         // 到達したノードが NULL だった場合、そこに新規ノードを追加する
         if (root == null) {
@@ -91,7 +89,6 @@ public class MyTreeMapImpl<K, V> implements MyTreeMap<K, V> {
         return removedVal;
     }
 
-    @SuppressWarnings("unchecked")
     Node removeRecursive(Node root, K key) {
         if (root == null) return null;
 

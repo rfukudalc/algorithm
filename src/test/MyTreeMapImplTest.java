@@ -99,8 +99,9 @@ public class MyTreeMapImplTest {
             assertEquals("VALUE_1500", myTreeMap.remove(1500));
             assertEquals("VALUE_1000", myTreeMap.remove(1000));
             assertEquals("VALUE_2", myTreeMap.remove(2));
-            assertNull(myTreeMap.remove(2));
             assertEquals("VALUE_250", myTreeMap.remove(250));
+
+            assertNull(myTreeMap.remove(2));
 
             assertEquals(11, myTreeMap.size());
 
