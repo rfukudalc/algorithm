@@ -43,7 +43,7 @@ public class MyTreeMapImpl<K, V> implements MyTreeMap<K, V> {
 
     @SuppressWarnings("unchecked")
     private Node getRecursive(Node root, K key) {
-        if (root == null || root.key == key) return root;
+        if (root == null || (root.key).equals(key)) return root;
         if (comparator.compare(root.key, key) < 0) return getRecursive(root.right, key);
 
         return getRecursive(root.left, key);
@@ -66,17 +66,17 @@ public class MyTreeMapImpl<K, V> implements MyTreeMap<K, V> {
 
             return root;
 
-        // 追加するノードキーが存在する場合は、値の書き換えのみを行う
+            // 追加するノードキーが存在する場合は、値の書き換えのみを行う
         } else if (root.key == key) {
             root.value = value;
 
             return root;
         }
-        // ツリーの頂点からノードキーを精査し、左側を横断するように再帰呼び出しを行う
+        // ツリーの頂点からノードキーを精査し、対象のキーがルートノードキーより小さければ、左側を横断するように再帰呼び出しを行う
         if (comparator.compare(key, root.key) < 0)
             root.left = putRecursive(root.left, key, value);
 
-        // ツリーの頂点からノードキーを精査し、右側を横断するように再帰呼び出しを行う
+            // ツリーの頂点からノードキーを精査し、対象のキーがルートノードキーより大きければ、右側を横断するように再帰呼び出しを行う
         else if (comparator.compare(key, root.key) > 0)
             root.right = putRecursive(root.right, key, value);
 
@@ -95,15 +95,15 @@ public class MyTreeMapImpl<K, V> implements MyTreeMap<K, V> {
     Node removeRecursive(Node root, K key) {
         if (root == null) return null;
 
-        // ツリーの頂点からノードキーを精査し、左側を横断するように再帰呼び出しを行う
+        // ツリーの頂点からノードキーを精査し、削除対象のキーがルートノードキーより小さければ、左側を横断するように再帰呼び出しを行う
         if (comparator.compare(key, root.key) < 0)
             root.left = removeRecursive(root.left, key);
 
-        // ツリーの頂点からノードキーを精査し、右側を横断するように再帰呼び出しを行う
+            // ツリーの頂点からノードキーを精査し、削除対象のキーがルートノードキーより大きければ、右側を横断するように再帰呼び出しを行う
         else if (comparator.compare(key, root.key) > 0)
             root.right = removeRecursive(root.right, key);
 
-        // 削除対象のノードに到達したら下記の処理を行う
+            // 削除対象のノードに到達したら下記の処理を行う
         else { // 削除対象のノードが子ノードを一つだけ持つ場合
             if (root.left == null) {
                 size--;
@@ -113,20 +113,23 @@ public class MyTreeMapImpl<K, V> implements MyTreeMap<K, V> {
                 return root.left;
             }
             // 削除対象のノードが子ノードを二つ持つ場合
-            root.key = minValue(root.right);
+            Node minNode = minNode(root.right);
+            root.key = minNode.key;
+            root.value = minNode.value;
             root.right = removeRecursive(root.right, root.key);
         }
 
         return root;
     }
 
-    K minValue(@NotNull Node root) {
-        K minVal = root.key;
+    Node minNode(@NotNull Node root) {
+        Node minNode = root;
         while (root.left != null) {
-            minVal = root.left.key;
+            minNode = root.left;
+            minNode.key = root.left.key;
             root = root.left;
         }
-        return minVal;
+        return minNode;
     }
 
     @Override
@@ -135,7 +138,7 @@ public class MyTreeMapImpl<K, V> implements MyTreeMap<K, V> {
     }
 
     @Override
-    public void forEach(BiConsumer<? super K,? super V> action) {
+    public void forEach(BiConsumer<? super K, ? super V> action) {
         Objects.requireNonNull(action);
         for (Node node : inOrder()) {
             action.accept(node.key, node.value);
