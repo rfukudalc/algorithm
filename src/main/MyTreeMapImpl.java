@@ -43,7 +43,7 @@ public class MyTreeMapImpl<K, V> implements MyTreeMap<K, V> {
 
     @SuppressWarnings("unchecked")
     private Node getRecursive(Node root, K key) {
-        if (root == null || (root.key).equals(key)) return root;
+        if (root == null || root.key.equals(key)) return root;
         if (comparator.compare(root.key, key) < 0) return getRecursive(root.right, key);
 
         return getRecursive(root.left, key);
