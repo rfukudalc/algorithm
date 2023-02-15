@@ -65,7 +65,7 @@ public class MyTreeMapImpl<K, V> implements MyTreeMap<K, V> {
             return root;
 
             // 追加するノードキーが存在する場合は、値の書き換えのみを行う
-        } else if (root.key == key) {
+        } else if (root.key.equals(key)) {
             root.value = value;
 
             return root;
