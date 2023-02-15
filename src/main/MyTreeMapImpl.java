@@ -41,11 +41,11 @@ public class MyTreeMapImpl<K, V> implements MyTreeMap<K, V> {
         return null;
     }
 
-    private Node getRecursive(Node root, K key) {
-        if (root == null || root.key.equals(key)) return root;
-        if (comparator.compare(root.key, key) < 0) return getRecursive(root.right, key);
+    private Node getRecursive(Node node, K key) {
+        if (node == null || node.key.equals(key)) return node;
+        if (comparator.compare(node.key, key) < 0) return getRecursive(node.right, key);
 
-        return getRecursive(root.left, key);
+        return getRecursive(node.left, key);
     }
 
     @Override
@@ -56,28 +56,28 @@ public class MyTreeMapImpl<K, V> implements MyTreeMap<K, V> {
         return updatedVal;
     }
 
-    Node putRecursive(Node root, K key, V value) {
+    Node putRecursive(Node node, K key, V value) {
         // 到達したノードが NULL だった場合、そこに新規ノードを追加する
-        if (root == null) {
-            root = new Node(key, value);
+        if (node == null) {
+            node = new Node(key, value);
             size++;
 
-            return root;
+            return node;
         // 追加するノードキーが存在する場合は、値の書き換えのみを行う
-        } else if (root.key.equals(key)) {
-            root.value = value;
+        } else if (node.key.equals(key)) {
+            node.value = value;
 
-            return root;
+            return node;
         }
         // ツリーの頂点から比較を開始し、挿入するキーが到達したノードのキーより小さければ、左側を横断するように再帰呼び出しを行う
-        if (comparator.compare(key, root.key) < 0)
-            root.left = putRecursive(root.left, key, value);
+        if (comparator.compare(key, node.key) < 0)
+            node.left = putRecursive(node.left, key, value);
 
         // ツリーの頂点から比較を開始し、挿入するキーが到達したノードのキーより大きければ、右側を横断するように再帰呼び出しを行う
-        else if (comparator.compare(key, root.key) > 0)
-            root.right = putRecursive(root.right, key, value);
+        else if (comparator.compare(key, node.key) > 0)
+            node.right = putRecursive(node.right, key, value);
 
-        return root;
+        return node;
     }
 
     @Override
@@ -88,42 +88,42 @@ public class MyTreeMapImpl<K, V> implements MyTreeMap<K, V> {
         return removedVal;
     }
 
-    Node removeRecursive(Node root, K key) {
-        if (root == null) return null;
+    Node removeRecursive(Node node, K key) {
+        if (node == null) return null;
 
         // ツリーの頂点から比較を開始し、削除するキーが到達したノードのキーより小さければ、左側を横断するように再帰呼び出しを行う
-        if (comparator.compare(key, root.key) < 0)
-            root.left = removeRecursive(root.left, key);
+        if (comparator.compare(key, node.key) < 0)
+            node.left = removeRecursive(node.left, key);
 
         // ツリーの頂点から比較を開始し、削除するキーが到達したノードのキーより大きければ、右側を横断するように再帰呼び出しを行う
-        else if (comparator.compare(key, root.key) > 0)
-            root.right = removeRecursive(root.right, key);
+        else if (comparator.compare(key, node.key) > 0)
+            node.right = removeRecursive(node.right, key);
 
         // 削除対象のノードに到達したら下記の処理を行う
         else { // 削除対象のノードが子ノードを一つだけ持つ場合
-            if (root.left == null) {
+            if (node.left == null) {
                 size--;
-                return root.right;
-            } else if (root.right == null) {
+                return node.right;
+            } else if (node.right == null) {
                 size--;
-                return root.left;
+                return node.left;
             }
             // 削除対象のノードが子ノードを二つ持つ場合
-            Node minNode = minNode(root.right);
-            root.key = minNode.key;
-            root.value = minNode.value;
-            root.right = removeRecursive(root.right, root.key);
+            Node minNode = minNode(node.right);
+            node.key = minNode.key;
+            node.value = minNode.value;
+            node.right = removeRecursive(node.right, node.key);
         }
 
-        return root;
+        return node;
     }
 
-    Node minNode(@NotNull Node root) {
-        Node minNode = root;
-        while (root.left != null) {
-            minNode = root.left;
-            minNode.key = root.left.key;
-            root = root.left;
+    Node minNode(@NotNull Node node) {
+        Node minNode = node;
+        while (node.left != null) {
+            minNode = node.left;
+            minNode.key = node.left.key;
+            node = node.left;
         }
         return minNode;
     }
@@ -145,13 +145,13 @@ public class MyTreeMapImpl<K, V> implements MyTreeMap<K, V> {
         return inOrderRecursive(root, new LinkedList<>());
     }
 
-    private LinkedList<Node> inOrderRecursive(Node root, LinkedList<Node> list) {
+    private LinkedList<Node> inOrderRecursive(Node node, LinkedList<Node> list) {
 
-        if (root != null) {
+        if (node != null) {
             // ノードを昇順に並び替えるため、ツリーの左下から順にリストへの追加を行う
-            inOrderRecursive(root.left, list);
-            list.add(root);
-            inOrderRecursive(root.right, list);
+            inOrderRecursive(node.left, list);
+            list.add(node);
+            inOrderRecursive(node.right, list);
         }
         return list;
     }

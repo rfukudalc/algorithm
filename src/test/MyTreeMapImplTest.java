@@ -109,6 +109,7 @@ public class MyTreeMapImplTest {
 
             assertEquals(11, myTreeMap.size());
 
+            assertNull(myTreeMap.get(1000));
             assertEquals("VALUE_0", myTreeMap.get(0));
             assertEquals("VALUE_2000", myTreeMap.get(2000));
             assertEquals("VALUE_1", myTreeMap.get(1));
@@ -130,6 +131,7 @@ public class MyTreeMapImplTest {
 
             assertNull(myTreeMap.remove(2));
             assertNull(myTreeMap.remove(1000));
+
             assertEquals(11, myTreeMap.size());
         }
     }
