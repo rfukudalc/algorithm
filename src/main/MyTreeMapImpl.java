@@ -63,18 +63,17 @@ public class MyTreeMapImpl<K, V> implements MyTreeMap<K, V> {
             size++;
 
             return root;
-
-            // 追加するノードキーが存在する場合は、値の書き換えのみを行う
+        // 追加するノードキーが存在する場合は、値の書き換えのみを行う
         } else if (root.key.equals(key)) {
             root.value = value;
 
             return root;
         }
-        // ツリーの頂点からノードキーを精査し、対象のキーがルートノードキーより小さければ、左側を横断するように再帰呼び出しを行う
+        // ツリーの頂点から比較を開始し、挿入するキーが到達したノードのキーより小さければ、左側を横断するように再帰呼び出しを行う
         if (comparator.compare(key, root.key) < 0)
             root.left = putRecursive(root.left, key, value);
 
-            // ツリーの頂点からノードキーを精査し、対象のキーがルートノードキーより大きければ、右側を横断するように再帰呼び出しを行う
+        // ツリーの頂点から比較を開始し、挿入するキーが到達したノードのキーより大きければ、右側を横断するように再帰呼び出しを行う
         else if (comparator.compare(key, root.key) > 0)
             root.right = putRecursive(root.right, key, value);
 
@@ -92,15 +91,15 @@ public class MyTreeMapImpl<K, V> implements MyTreeMap<K, V> {
     Node removeRecursive(Node root, K key) {
         if (root == null) return null;
 
-        // ツリーの頂点からノードキーを精査し、削除対象のキーがルートノードキーより小さければ、左側を横断するように再帰呼び出しを行う
+        // ツリーの頂点から比較を開始し、削除するキーが到達したノードのキーより小さければ、左側を横断するように再帰呼び出しを行う
         if (comparator.compare(key, root.key) < 0)
             root.left = removeRecursive(root.left, key);
 
-            // ツリーの頂点からノードキーを精査し、削除対象のキーがルートノードキーより大きければ、右側を横断するように再帰呼び出しを行う
+        // ツリーの頂点から比較を開始し、削除するキーが到達したノードのキーより大きければ、右側を横断するように再帰呼び出しを行う
         else if (comparator.compare(key, root.key) > 0)
             root.right = removeRecursive(root.right, key);
 
-            // 削除対象のノードに到達したら下記の処理を行う
+        // 削除対象のノードに到達したら下記の処理を行う
         else { // 削除対象のノードが子ノードを一つだけ持つ場合
             if (root.left == null) {
                 size--;
