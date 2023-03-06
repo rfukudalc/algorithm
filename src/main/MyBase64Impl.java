@@ -3,53 +3,45 @@ package main;
 import org.jetbrains.annotations.NotNull;
 
 public class MyBase64Impl implements MyBase64 {
-    private static final char[] BASE64_ALPHABET = new char[]{
-            'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
-            'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
-            'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
-            'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
-            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '/'
-    };
+    private static final String BASE64_ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
-    // This method encodes a byte array to a base64-encoded string
     public String encodeToString(byte @NotNull [] bytes) {
         StringBuilder sb = new StringBuilder();
         int len = bytes.length;
-        // Initialize a counter variable to iterate through the byte array
+        // バイト配列を反復処理するためのカウンタ変数を初期化する
         int i = 0;
-        // Initialize variables to hold three bytes at a time
+        // 3バイトずつ反復処理し、各3バイトを4つのBase64文字にエンコードするための変数を初期化する
         int b1, b2, b3;
-        // Iterate through the byte array in 3-byte increments and encode each set of three bytes to 4 base64 characters
+
         while (i < len) {
-            // Extract the first byte
+            // 1バイト目を抽出する
             b1 = bytes[i++] & 0xff;
-            // If this is the last byte in the array, encode the remaining one or two bytes and pad with "=" or "=="
+            // 配列内の最後のバイトである場合、残りの1または2バイトをエンコードして"="または"=="でパディングする
             if (i == len) {
-                sb.append(BASE64_ALPHABET[b1 >>> 2]); // Encode the first 6 bits of the first byte
-                sb.append(BASE64_ALPHABET[(b1 & 0x3) << 4]); // Encode the last 2 bits of the first byte and pad with 4 zeros
-                sb.append("=="); // Pad with "=="
+                sb.append(BASE64_ALPHABET.charAt(b1 >>> 2)); // 1バイト目の最初の6ビットをエンコードする
+                sb.append(BASE64_ALPHABET.charAt((b1 & 0x3) << 4)); // 1バイト目の最後の2ビットをエンコードして4つの0でパディングする
+                sb.append("=="); // "=="でパディングする
                 break;
             }
-            // Extract the second byte
+            // 2バイト目を抽出する
             b2 = bytes[i++] & 0xff;
-            // If this is the second-to-last byte in the array, encode the remaining two bytes and pad with "="
+            // 配列内の最後から2番目のバイトである場合、残りの2バイトをエンコードして"="でパディングする
             int i1 = ((b1 & 0x3) << 4) | ((b2 & 0xf0) >>> 4);
             if (i == len) {
-                sb.append(BASE64_ALPHABET[b1 >>> 2]); // Encode the first 6 bits of the first byte
-                sb.append(BASE64_ALPHABET[i1]); // Encode the last 2 bits of the first byte and the first 4 bits of the second byte
-                sb.append(BASE64_ALPHABET[(b2 & 0xf) << 2]); // Encode the last 4 bits of the second byte and pad with 2 zeros
-                sb.append("="); // Pad with "="
+                sb.append(BASE64_ALPHABET.charAt(b1 >>> 2)); // 1バイト目の最初の6ビットをエンコードする
+                sb.append(BASE64_ALPHABET.charAt(i1)); // 1バイト目の最後の2ビットと2バイト目の最初の4ビットをエンコードする
+                sb.append(BASE64_ALPHABET.charAt((b2 & 0xf) << 2)); // 2バイト目の最後の4ビットをエンコードして2つのゼロでパディングする
+                sb.append("="); // "="でパディングする
                 break;
             }
-            // Extract the third byte
+            // 3番目のバイトを取り出す
             b3 = bytes[i++] & 0xff;
-            // Encode the first byte
-            sb.append(BASE64_ALPHABET[b1 >>> 2]); // Encode the first 6 bits of the first byte
-            sb.append(BASE64_ALPHABET[i1]); // Encode the last 2 bits of the first byte and the first 4 bits of the second byte
-            sb.append(BASE64_ALPHABET[((b2 & 0xf) << 2) | ((b3 & 0xc0) >>> 6)]); // Encode the last 2 bits of the second byte and the first 6 bits of the third byte
-            sb.append(BASE64_ALPHABET[b3 & 0x3f]); // Encode the last 6 bits of the third byte
+            // 最初のバイトをエンコード
+            sb.append(BASE64_ALPHABET.charAt(b1 >>> 2)); // 最初のバイトの最初の6ビットをエンコード
+            sb.append(BASE64_ALPHABET.charAt(i1)); // 最初のバイトの最後の2ビットと2番目のバイトの最初の4ビットをエンコード
+            sb.append(BASE64_ALPHABET.charAt((b2 & 0xf) << 2) | ((b3 & 0xc0) >>> 6)); // 2番目のバイトの最後の2ビットと3番目のバイトの最初の6ビットをエンコード
+            sb.append(BASE64_ALPHABET.charAt(b3 & 0x3f)); // 3番目のバイトの最後の6ビットをエンコード
         }
-        // Return the base64-encoded string
         return sb.toString();
     }
 }
