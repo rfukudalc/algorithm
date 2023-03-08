@@ -21,7 +21,7 @@ public class MyBase64Impl implements MyBase64 {
         while (i < len) {
             // 最初のバイトを取り出す
             b1 = bytes[i++] & 0xff;
-            // 配列の最後のバイトである場合、残りの1または2バイトをエンコードして、"="または"=="でパディングする
+            // 配列の最後のバイトである場合、残りの2バイトを"=="でパディングする
             if (i == len) {
                 sb.append(BASE64_ALPHABET[b1 >>> 2]); // 最初のバイトの最初の6ビットをエンコードする
                 sb.append(BASE64_ALPHABET[(b1 & 0x3) << 4]); // 最初のバイトの最後の2ビットをエンコードして、4つのゼロでパディングする
@@ -35,16 +35,15 @@ public class MyBase64Impl implements MyBase64 {
             if (i == len) {
                 sb.append(BASE64_ALPHABET[b1 >>> 2]); // 最初のバイトの最初の6ビットをエンコードする
                 sb.append(BASE64_ALPHABET[i1]); // 最初のバイトの最後の2ビットと2番目のバイトの最初の4ビットをエンコードする
-                sb.append(BASE64_ALPHABET[(b2 & 0xf) << 2]); // 2番目のバイトの最後の4ビットをエンコードして、2つの0でパディングする
+                sb.append(BASE64_ALPHABET[(b2 & 0x0f) << 2]); // 2番目のバイトの最後の4ビットをエンコードして、2つの0でパディングする
                 sb.append("="); // "="でパディングする
                 break;
             }
             // 3番目のバイトを抽出する
             b3 = bytes[i++] & 0xff;
-            // 最初のバイトをエンコードする
             sb.append(BASE64_ALPHABET[b1 >>> 2]); // 最初のバイトの最初の6ビットをエンコードする
             sb.append(BASE64_ALPHABET[i1]); // 最初のバイトの最後の2ビットと2番目のバイトの最初の4ビットをエンコードする
-            sb.append(BASE64_ALPHABET[((b2 & 0xf) << 2) | ((b3 & 0xc0) >>> 6)]); // 2番目のバイトの最後の2ビットと3番目のバイトの最初の6ビットをエンコードする
+            sb.append(BASE64_ALPHABET[((b2 & 0x0f) << 2) | ((b3 & 0xc0) >>> 6)]); // 2番目のバイトの最後の4ビットと3番目のバイトの最初の2ビットをエンコードする
             sb.append(BASE64_ALPHABET[b3 & 0x3f]); // 3番目のバイトの最後の6ビットをエンコードする
         }
         // Base64でエンコードされた文字列を返す
